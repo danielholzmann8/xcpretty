@@ -409,6 +409,13 @@ module XCPretty
       @parser.parse(SAMPLE_FAILING_DEVICE_TESTS)
     end
 
+    it "parses unknown strings" do
+      @formatter.should receive(:format_other).with(
+        SAMPLE_FORMAT_OTHER_UNRECOGNIZED_STRING
+      )
+      @parser.parse(SAMPLE_FORMAT_OTHER_UNRECOGNIZED_STRING)
+    end
+
     context "errors" do
       it "parses clang errors" do
         @formatter.should receive(:format_error).with(SAMPLE_CLANG_ERROR)

@@ -60,7 +60,7 @@ module XCPretty
     # @regex Captured groups
     # $1 compiler_command
     # $2 file_path
-    COMPILE_COMMAND_MATCHER = /^\s*(.*\/bin\/clang\s.*\s\-c\s(.*\.(?:m|mm|c|cc|cpp|cxx))\s.*\.o)$/
+    COMPILE_COMMAND_MATCHER = /^\s*(.*clang\s.*\s\-c\s(.*\.(?:m|mm|c|cc|cpp|cxx))\s.*\.o)$/
 
     # @regex Captured groups
     # $1 file_path
@@ -118,6 +118,7 @@ module XCPretty
     # $2 = test_case
     # $3 = device
     PARALLEL_FAILING_TEST_MATCHER = /^\s*Test\s[Cc]ase\s'(:?[\+\-]\[)*(.*)[\s\.](.*)(?:\]|\(\))'\sfailed\son\s'(.*)'/
+    RESTARTING_TESTS_MATCHER = /^Restarting after unexpected exit or crash in.+$/
 
     # @regex Captured groups
     # $1 = dsym
@@ -377,6 +378,8 @@ module XCPretty
         formatter.format_device_tests_passed($1)
       when EXECUTED_MATCHER
         format_summary_if_needed(text)
+      when RESTARTING_TESTS_MATCHER
+        formatter.format_failing_test(@test_suite, @test_case, "Test crashed", "n/a")
       when UI_FAILING_TEST_MATCHER
         formatter.format_failing_device_test(@test_suite, @test_case, $2, $1, nil)
       when PARALLEL_FAILING_TEST_MATCHER
@@ -442,7 +445,7 @@ module XCPretty
       when WILL_NOT_BE_CODE_SIGNED_MATCHER
         formatter.format_will_not_be_code_signed($1)
       else
-        ""
+        formatter.format_other(text)
       end
     end
 
@@ -463,6 +466,8 @@ module XCPretty
         store_failure(file: $1, test_suite: $2, test_case: $3, reason: $4)
       when UI_FAILING_TEST_MATCHER
         store_failure(file: $1, test_suite: @test_suite, test_case: @test_case, reason: $2)
+      when RESTARTING_TESTS_MATCHER
+        store_failure(file: "n/a", test_suite: @test_suite, test_case: @test_case, reason: "Test crashed")
       end
     end
 

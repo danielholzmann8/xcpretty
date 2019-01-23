@@ -3,6 +3,10 @@ Given(/^I have a file to compile$/) do
   add_run_input SAMPLE_COMPILE
 end
 
+Given(/^I have a file to compile with ccache$/) do
+  add_run_input SAMPLE_COMPILE_CCACHE
+end
+
 Given(/^I have a xib to compile$/) do
   add_run_input SAMPLE_COMPILE_XIB
 end
@@ -29,6 +33,10 @@ end
 
 Given(/^I have a failing test in my suite$/) do
   add_run_input SAMPLE_OLD_SPECTA_FAILURE
+end
+
+Given(/^I have a swift fatal error in a test in my suite$/) do
+  add_run_input SAMPLE_SWIFT_FATAL_ERROR_IN_TEST_MAKE_TESTS_RESTARTING
 end
 
 Given(/^all of my tests will pass in my suite$/) do
